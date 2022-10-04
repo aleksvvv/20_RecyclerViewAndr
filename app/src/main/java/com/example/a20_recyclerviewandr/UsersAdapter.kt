@@ -6,6 +6,7 @@ import android.view.Menu
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.widget.PopupMenu
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.a20_recyclerviewandr.databinding.ItemUserBinding
@@ -16,6 +17,26 @@ interface UserActionListener {
     fun OnUserDelete(user: User)
     fun onUserDetails(user: User)
 }
+class UsersDiffCallback(
+    private val oldList: List<User>,
+    private val newList: List<User>
+) : DiffUtil.Callback() {
+
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldUser = oldList[oldItemPosition]
+        val newUser = newList[newItemPosition]
+        return oldUser.id == newUser.id
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldUser = oldList[oldItemPosition]
+        val newUser = newList[newItemPosition]
+        return oldUser == newUser
+    }
+}
 //передаем userActionListener в конструктор адаптера
 class UsersAdapter( private  val actionListener: UserActionListener)
 //в <> должен быть viewholder. Создаем его в теле класса
@@ -24,8 +45,11 @@ class UsersAdapter( private  val actionListener: UserActionListener)
     //список пользователей с функцией уведомления при изменении списка
     var users: List<User> = emptyList()
         set(newValue) {
-            field = newValue
-            notifyDataSetChanged()
+            val diffCallback = UsersDiffCallback(field, newValue)
+            val diffResult = DiffUtil.calculateDiff(diffCallback)
+          field = newValue
+        diffResult.dispatchUpdatesTo(this)
+        // notifyDataSetChanged()
         }
     override fun onClick(v: View) {
         //получаем пользователя
