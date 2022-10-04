@@ -62,9 +62,23 @@ class UsersService {
         //проверяем на отрицательное значение и чтобы не выходил за размер
         var newIndex = oldIndex + moveBy
         if ( newIndex < 0 || newIndex >= users.size) return
+        //создаем новый список. в адаптере будет старый
         users = ArrayList(users)
         //метод меняет местами элементы
         Collections.swap(users,oldIndex,newIndex)
+        notifyChanges()
+    }
+    //удаляем компанию
+    fun fireUser (user: User) {
+        val index = users.indexOfFirst{ it.id == user.id}
+        if ( index == -1 ) return
+        //создаем нового пользователя с измененным полем
+        val updateUser = users[index].copy(company = "")
+
+       // users[index].company = ""
+        val users = ArrayList(users)
+        //ложим нового пользователя
+        users[index] = updateUser
         notifyChanges()
     }
     //добавить слушатель

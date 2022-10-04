@@ -16,6 +16,7 @@ interface UserActionListener {
     fun onUserMove(user: User, moveBy: Int)
     fun OnUserDelete(user: User)
     fun onUserDetails(user: User)
+    fun onUserFire(user: User)
 }
 class UsersDiffCallback(
     private val oldList: List<User>,
@@ -89,16 +90,20 @@ class UsersAdapter( private  val actionListener: UserActionListener)
     //обновить элемент списка
     override fun onBindViewHolder(holder: UsersViewHolder, position: Int) {
 
-
         // получили ЭЛЕМЕНТ СПИСКА
         val user = users[position]
         //отрисовываем элемент через биндинг
+        //создаем контекст для доступа к ресурсам
+        val context = holder.itemView.context
         with(holder.binding) {
             //возвращаем в tag значения. При нажатии на них вызывается onClick
             holder.itemView.tag = user
             moreImageViewButton.tag = user
 
-            userNameTextView.text = user.name
+            userNameTextView.text = if (user.company.isNotBlank()) user.name
+            else context.getString(R.string.unemployed)
+            //добавлям условие показывать компанию
+
             userCompanyTextView.text = user.company
 //если в onBindViewHolder применяется ветвление, то нужно обновление в обоих ветках
             if (user.photo.isNotBlank()) {
@@ -137,12 +142,17 @@ class UsersAdapter( private  val actionListener: UserActionListener)
             isEnabled = position < users.size -1
         }
         popupMenu.menu.add(0, ID_REMOVE, Menu.NONE, "Remove")
+        //если компания непустая, то только тогда добавляем  пункт
+        if ( user.company.isNotBlank() ){
+            popupMenu.menu.add(0, ID_FIRE, Menu.NONE, context.getString(R.string.fire))
+        }
 
         popupMenu.setOnMenuItemClickListener {
             when(it.itemId){
                 ID_MOVE_UP -> {actionListener.onUserMove(user, -1)}
                 ID_MOVE_DOWN -> {actionListener.onUserMove(user, 1)}
                 ID_REMOVE -> {actionListener.OnUserDelete(user)}
+                ID_FIRE -> {actionListener.onUserFire(user)}
             }
             return@setOnMenuItemClickListener true
         }
@@ -158,6 +168,7 @@ class UsersAdapter( private  val actionListener: UserActionListener)
         private const val ID_MOVE_UP = 1
         private const val ID_MOVE_DOWN = 2
         private const val ID_REMOVE = 3
+        private const val ID_FIRE = 4
     }
 
 }

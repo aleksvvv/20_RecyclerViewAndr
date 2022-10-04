@@ -35,6 +35,9 @@ class MainActivity : AppCompatActivity() {
             override fun onUserDetails(user: User){
                 Toast.makeText(this@MainActivity, "User: ${user.name}", Toast.LENGTH_LONG).show()
             }
+            override fun onUserFire(user: User){
+                usersService.fireUser(user)
+            }
         })
 
         //создаем лаяут менеджер для отражения списка
