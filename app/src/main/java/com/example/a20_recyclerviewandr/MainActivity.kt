@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
 import android.widget.Toast
+import androidx.recyclerview.widget.DefaultItemAnimator
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.a20_recyclerviewandr.databinding.ActivityMainBinding
 import com.example.a20_recyclerviewandr.model.User
@@ -45,11 +46,15 @@ class MainActivity : AppCompatActivity() {
 
         //назначаем его нашей рецаклер вью
         binding.recyclerView.layoutManager = layoutManager
-        Log.d("MyLog", "layoutManager $layoutManager")
+
 
         //назначаем ADAPTER нашей рецаклер вью
         binding.recyclerView.adapter = adapter
-        Log.d("MyLog", "layoutManager2 $layoutManager")
+        //убираем мерцание
+        val itemAnimator = binding.recyclerView.itemAnimator
+        if (itemAnimator is DefaultItemAnimator){
+            itemAnimator.supportsChangeAnimations = false
+        }
 
         //добавляем слушатель
         usersService.addListener(usersListener)
