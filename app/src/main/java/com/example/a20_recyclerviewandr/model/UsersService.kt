@@ -3,6 +3,8 @@ package com.example.a20_recyclerviewandr.model
 
 import com.github.javafaker.Faker
 import java.util.*
+import kotlin.collections.ArrayList
+
 //Это самая простейшая реализация модели, то есть классов отвечающих за данные и бизнес-логику.
 // В реальных приложениях пользователи в списке появлялись бы не из воздуха,
 // а например из базы или сервера, и тогда бы UsersService этим бы и занимался.
@@ -47,9 +49,11 @@ class UsersService {
         //если не выполняется условие, то возвращает -1
         val indexToDelete = users.indexOfFirst { it.id == user.id }
         if ( indexToDelete != -1){
+            users = ArrayList(users)
             users.removeAt(indexToDelete)
+            notifyChanges()
         }
-        notifyChanges()
+
     }
     //премещение пользователя по списку
     fun moveUser(user: User, moveBy: Int){
@@ -58,6 +62,7 @@ class UsersService {
         //проверяем на отрицательное значение и чтобы не выходил за размер
         var newIndex = oldIndex + moveBy
         if ( newIndex < 0 || newIndex >= users.size) return
+        users = ArrayList(users)
         //метод меняет местами элементы
         Collections.swap(users,oldIndex,newIndex)
         notifyChanges()
