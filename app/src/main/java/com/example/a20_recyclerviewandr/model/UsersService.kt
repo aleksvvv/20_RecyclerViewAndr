@@ -76,7 +76,7 @@ class UsersService {
         val updateUser = users[index].copy(company = "")
 
        // users[index].company = ""
-        val users = ArrayList(users)
+        users = ArrayList(users)
         //ложим нового пользователя
         users[index] = updateUser
         notifyChanges()

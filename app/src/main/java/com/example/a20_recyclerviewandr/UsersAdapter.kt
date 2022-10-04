@@ -100,11 +100,13 @@ class UsersAdapter( private  val actionListener: UserActionListener)
             holder.itemView.tag = user
             moreImageViewButton.tag = user
 
-            userNameTextView.text = if (user.company.isNotBlank()) user.name
-            else context.getString(R.string.unemployed)
+            userNameTextView.text = user.name
             //добавлям условие показывать компанию
 
-            userCompanyTextView.text = user.company
+            userCompanyTextView.text = if (user.company.isNotBlank()) user.name
+            else context.getString(R.string.unemployed)
+
+
 //если в onBindViewHolder применяется ветвление, то нужно обновление в обоих ветках
             if (user.photo.isNotBlank()) {
                 //используется библиотека Glide
